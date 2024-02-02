@@ -1,277 +1,148 @@
-# interface-bridge
+# drag
 
-字段适配器，解决前后端接口之间字段映射问题。
+让元素支持拖拽移动
 
 ## 安装
 
 ```bash
 # npm
-npm i interface-bridge
+npm i @siqing/drag
 # yarn
-yarn add interface-bridge
+yarn add @siqing/drag
 # pnpm
-pnpm add interface-bridge
+pnpm add @siqing/drag
 ```
 
 ## 用法
 
 ```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right'
-}
-
-const bridge = new InterfaceBridge(map, {
-  // 默认为false, 设置未true后将过滤掉非映射关系中的字段
-  isExact: false
-})
-interface HandleDataType {
-  backendField: string;
-  right: number;
-}
-bridge.pickData<HandleDataType>({
-  frontendField: '123',
-  left: 321
-})
-/*
-{
-  backendField: "123"
-  right: 321
-}
-*/
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+Drag(div);
 ```
 
 ## 配置参数
 
-#### options.isExact: boolean
+#### options?.top | options?.left : string
 
-默认为false, 设置为true后将过滤掉非映射关系中的字段
+设置元素的初始位置，默认为元素当前位置
 
 ```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right'
-}
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+Drag(div, {
+  top: '100px',
+  left: '100px'
+});
+```
 
-const bridge = new InterfaceBridge(map, {
-  // 默认为false, 设置未true后将过滤掉非映射关系中的字段
-  isExact: true
-})
-interface HandleDataType {
-  backendField: string;
-  right: number;
-  test?: number
-}
-bridge.pickData<HandleDataType>({
-  frontendField: '123',
-  left: 321,
-  test: 123
-})
-/*
-{
-  backendField: "123",
-  right: 321
-}
-*/
-const bridge = new InterfaceBridge(map, {
-  isExact: false
-})
-bridge.pickData<HandleDataType>({
-  frontendField: '123',
-  left: 321,
-  test: 123
-})
-/*
-{
-  backendField: "123",
-  right: 321,
-  test: 123
-}
-*/
+#### options?.zIndex : number
+
+设置元素的层级（fixed），默认为99
+
+```javascript
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+Drag(div, {
+  top: '100px',
+  left: '100px',
+  zIndex: 9999
+});
+```
+
+#### options?.onClick : Function
+
+设置元素的点击事件
+
+```javascript
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+Drag(div, {
+  top: '100px',
+  left: '100px',
+  zIndex: 9999,
+  onClick: (e) => {
+    console.log(e)
+  }
+});
 ```
 
 ## 方法
 
-#### omitData\<T\>(data, keys): T
+#### reset
 
-将前端的数据转换成后端要的数据
-
-|参数名|类型|必选|说明|
-|:---- |:--   |:---|:----- |
-|data |object| 是 | 第几页，默认 1 |
-|keys |string[]| 否 | 过滤掉的数据，注意是转换后的数据的key值 |
-
-> 返回值: `object` 转换后的数据
+重置为初始状态
 
 **示例**
 
 ```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right',
-  abc: 'ABC'
-}
-
-const bridge = new InterfaceBridge(map)
-
-bridge.omitData({
-  frontendField: '123',
-  left: 321
-})
-/*
-{
-  backendField: "123",
-  right: 321,
-  ABC: undefined
-}
-*/
-bridge.omitData({
-  frontendField: '123',
-  left: 321
-}, ['ABC'])
-/*
-{
-  backendField: "123",
-  right: 321
-}
-*/
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+const drag = Drag(div, {
+  top: '100px',
+  left: '100px',
+  zIndex: 9999,
+  onClick: (e) => {
+    console.log(e)
+  }
+});
+setTimeout(() => {
+  drag.reset();
+}, 3000);
 ```
 
-#### omitReverseData\<T\>(data, keys): T
+#### destroy
 
-将后端的数据转换成前端要的数据
-
-|参数名|类型|必选|说明|
-|:---- |:--   |:---|:----- |
-|data |object| 是 | 第几页，默认 1 |
-|keys |string[]| 否 | 过滤掉的数据，注意是转换后的数据的key值 |
-
-> 返回值: `object` 转换后的数据
+销毁当前元素绑定的相关拖拽事件和点击事件
 
 **示例**
 
 ```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right',
-  abc: 'ABC'
-}
-
-const bridge = new InterfaceBridge(map)
-
-bridge.omitReverseData({
-  backendField: '123',
-  right: 321
-})
-/*
-{
-  frontendField: "123",
-  left: 321,
-  abc: undefined
-}
-*/
-bridge.omitReverseData({
-  backendField: '123',
-  right: 321
-}, ['abc'])
-/*
-{
-  frontendField: "123"
-  left: 321
-}
-*/
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+const drag = Drag(div, {
+  top: '100px',
+  left: '100px',
+  zIndex: 9999,
+  onClick: (e) => {
+    console.log(e)
+  }
+});
+setTimeout(() => {
+  drag.destroy();
+}, 3000);
 ```
 
-#### pickData\<T\>(data, keys): T
+#### register
 
-将前端的数据转换成后端要的数据
+重新注册当前元素的相关拖拽事件和点击事件
 
-|参数名|类型|必选|说明|
-|:---- |:--   |:---|:----- |
-|data |object| 是 | 第几页，默认 1 |
-|keys |string[]| 否 | 需要的数据，注意是转换后的数据的key值 |
-
-> 返回值: `object` 转换后的数据
+> 常常用于destroy()后
 
 **示例**
 
 ```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right',
-  abc: 'ABC'
-}
-
-const bridge = new InterfaceBridge(map)
-
-bridge.pickData({
-  frontendField: '123',
-  left: 321
-})
-/*
-{
-  ABC: undefined,
-  backendField: "123",
-  right: 321
-}
-*/
-bridge.pickData({
-  frontendField: '123',
-  left: 321
-}, ['backendField'])
-/*
-{
-  backendField: "123"
-}
-*/
-```
-
-#### pickReverseData\<T\>(data, keys): T
-
-将后端的数据转换成前端要的数据
-
-|参数名|类型|必选|说明|
-|:---- |:--   |:---|:----- |
-|data |object| 是 | 第几页，默认 1 |
-|keys |string[]| 否 | 需要的数据，注意是转换后的数据的key值 |
-
-> 返回值: `object` 转换后的数据
-
-**示例**
-
-```javascript
-import InterfaceBridge from 'interface-bridge';
-const map = {
-  frontendField: 'backendField',
-  left: 'right',
-  abc: 'ABC'
-}
-
-const bridge = new InterfaceBridge(map)
-
-bridge.pickReverseData({
-  backendField: '123',
-  right: 321
-})
-/*
-{
-  abc: undefined,
-  frontendField: "123",
-  left: 321
-}
-*/
-bridge.omitReverseData({
-  backendField: '123',
-  right: 321
-}, ['frontendField'])
-/*
-{
-  frontendField: "123"
-}
-*/
+import Drag from '@siqing/drag';
+const div = document.createElement('div');
+div.innerHTML = 'move element';
+const drag = Drag(div, {
+  top: '100px',
+  left: '100px',
+  zIndex: 9999,
+  onClick: (e) => {
+    console.log(e)
+  }
+});
+setTimeout(() => {
+  drag.destroy();
+  setTimeout(() => {
+    drag.register();
+  }, 1000);
+}, 3000);
 ```

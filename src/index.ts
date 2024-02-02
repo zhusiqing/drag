@@ -8,6 +8,7 @@ export interface OptionsType {
 export class Drag {
   el: HTMLElement;
   options: Required<OptionsType>
+  private defaultOptions: Required<OptionsType>
   private mousePos: {
     x: number;
     y: number;
@@ -29,12 +30,13 @@ export class Drag {
   constructor(el: HTMLElement, options: OptionsType) {
     this.el = el;
     this.options = {
-      top: window.innerHeight - 20 * 4 + 'px',
-      left: window.innerWidth - 20 * 2 + 'px',
+      top: el.offsetTop + 'px',
+      left: el.offsetLeft + 'px',
       zIndex: 99,
       onClick: () => {},
       ...options
     };
+    this.defaultOptions = { ...this.options }
     this.init();
   }
   private init() {
@@ -106,6 +108,12 @@ export class Drag {
     document.removeEventListener('mousemove', this.handleMousemove);
     this.el.removeEventListener('mouseup', this.handelMouseup);
     this.el.removeEventListener('click', this.handleClick);
+  }
+  reset() {
+    this.options = { ...this.defaultOptions }
+    this.clearListeners();
+    this.setStyle();
+    this.addListeners();
   }
   register() {
     this.addListeners();

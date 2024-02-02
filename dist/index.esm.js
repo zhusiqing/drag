@@ -38,7 +38,8 @@ var Drag = /** @class */ (function () {
         this.isMoving = false;
         this.isClick = false;
         this.el = el;
-        this.options = __assign({ top: window.innerHeight - 20 * 4 + 'px', left: window.innerWidth - 20 * 2 + 'px', zIndex: 99, onClick: function () { } }, options);
+        this.options = __assign({ top: el.offsetTop + 'px', left: el.offsetLeft + 'px', zIndex: 99, onClick: function () { } }, options);
+        this.defaultOptions = __assign({}, this.options);
         this.init();
     }
     Drag.prototype.init = function () {
@@ -117,6 +118,12 @@ var Drag = /** @class */ (function () {
         document.removeEventListener('mousemove', this.handleMousemove);
         this.el.removeEventListener('mouseup', this.handelMouseup);
         this.el.removeEventListener('click', this.handleClick);
+    };
+    Drag.prototype.reset = function () {
+        this.options = __assign({}, this.defaultOptions);
+        this.clearListeners();
+        this.setStyle();
+        this.addListeners();
     };
     Drag.prototype.register = function () {
         this.addListeners();

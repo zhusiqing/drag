@@ -7,6 +7,7 @@ interface OptionsType {
 declare class Drag {
     el: HTMLElement;
     options: Required<OptionsType>;
+    private defaultOptions;
     private mousePos;
     private elPos;
     private startTime;
@@ -21,6 +22,7 @@ declare class Drag {
     private handelMouseup;
     private handleClick;
     private clearListeners;
+    reset(): void;
     register(): void;
     destroy(): void;
 }

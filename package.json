@@ -2,9 +2,9 @@
   "name": "@siqing/drag",
   "version": "1.0.0",
   "description": "让元素支持拖拽移动",
-  "main": "dist/interface-bridge.js",
-  "module": "dist/interface-bridge.esm.js",
-  "types": "dist/interface-bridge.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/*.js",
     "dist/index.d.ts",
