@@ -4,6 +4,12 @@ export interface OptionsType {
   zIndex?: number;
   onClick?: Function;
 }
+export interface ListenersType {
+  mousedown: any;
+  mousemove: any;
+  mouseup: any;
+  click: any;
+}
 
 export class Drag {
   el: HTMLElement;
@@ -26,6 +32,12 @@ export class Drag {
   private startTime: number = Date.now();
   private isMoving: boolean = false;
   private isClick: boolean = false;
+  private cacheListeners: ListenersType = {
+    mousedown: () => {},
+    mousemove: () => {},
+    mouseup: () => {},
+    click: () => {}
+  }
 
   constructor(el: HTMLElement, options: OptionsType) {
     this.el = el;
@@ -59,10 +71,16 @@ export class Drag {
     this.el.setAttribute('style', `${oldStyle}${constantStyle}${computedStyle}`);
   }
   private addListeners() {
-    this.el.addEventListener('mousedown', this.handleMousedown);
-    document.addEventListener('mousemove', this.handleMousemove);
-    this.el.addEventListener('mouseup', this.handelMouseup);
-    this.el.addEventListener('click', this.handleClick);
+    this.cacheListeners = {
+      mousedown: this.handleMousedown.bind(this),
+      mousemove: this.handleMousemove.bind(this),
+      mouseup: this.handelMouseup.bind(this),
+      click: this.handleClick.bind(this)
+    }
+    this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
+    document.addEventListener('mousemove', this.cacheListeners.mousemove);
+    this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
+    this.el.addEventListener('click', this.cacheListeners.click);
   }
   private handleMousedown (e: MouseEvent) {
     e.preventDefault();
@@ -104,10 +122,16 @@ export class Drag {
     this.options.onClick.call(this.el, e);
   }
   private clearListeners() {
-    this.el.removeEventListener('mousedown', this.handleMousedown);
-    document.removeEventListener('mousemove', this.handleMousemove);
-    this.el.removeEventListener('mouseup', this.handelMouseup);
-    this.el.removeEventListener('click', this.handleClick);
+    this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
+    document.removeEventListener('mousemove', this.cacheListeners.mousemove);
+    this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
+    this.el.removeEventListener('click', this.cacheListeners.click);
+    this.cacheListeners = {
+      mousedown: () => {},
+      mousemove: () => {},
+      mouseup: () => {},
+      click: () => {}
+    }
   }
   reset() {
     this.options = { ...this.defaultOptions }

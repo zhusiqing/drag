@@ -43,6 +43,12 @@
             this.startTime = Date.now();
             this.isMoving = false;
             this.isClick = false;
+            this.cacheListeners = {
+                mousedown: function () { },
+                mousemove: function () { },
+                mouseup: function () { },
+                click: function () { }
+            };
             this.el = el;
             this.options = __assign({ top: el.offsetTop + 'px', left: el.offsetLeft + 'px', zIndex: 99, onClick: function () { } }, options);
             this.defaultOptions = __assign({}, this.options);
@@ -68,10 +74,16 @@
             this.el.setAttribute('style', "".concat(oldStyle).concat(constantStyle).concat(computedStyle));
         };
         Drag.prototype.addListeners = function () {
-            this.el.addEventListener('mousedown', this.handleMousedown);
-            document.addEventListener('mousemove', this.handleMousemove);
-            this.el.addEventListener('mouseup', this.handelMouseup);
-            this.el.addEventListener('click', this.handleClick);
+            this.cacheListeners = {
+                mousedown: this.handleMousedown.bind(this),
+                mousemove: this.handleMousemove.bind(this),
+                mouseup: this.handelMouseup.bind(this),
+                click: this.handleClick.bind(this)
+            };
+            this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
+            document.addEventListener('mousemove', this.cacheListeners.mousemove);
+            this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
+            this.el.addEventListener('click', this.cacheListeners.click);
         };
         Drag.prototype.handleMousedown = function (e) {
             e.preventDefault();
@@ -120,10 +132,16 @@
             this.options.onClick.call(this.el, e);
         };
         Drag.prototype.clearListeners = function () {
-            this.el.removeEventListener('mousedown', this.handleMousedown);
-            document.removeEventListener('mousemove', this.handleMousemove);
-            this.el.removeEventListener('mouseup', this.handelMouseup);
-            this.el.removeEventListener('click', this.handleClick);
+            this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
+            document.removeEventListener('mousemove', this.cacheListeners.mousemove);
+            this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
+            this.el.removeEventListener('click', this.cacheListeners.click);
+            this.cacheListeners = {
+                mousedown: function () { },
+                mousemove: function () { },
+                mouseup: function () { },
+                click: function () { }
+            };
         };
         Drag.prototype.reset = function () {
             this.options = __assign({}, this.defaultOptions);

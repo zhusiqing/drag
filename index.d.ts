@@ -4,6 +4,12 @@ interface OptionsType {
     zIndex?: number;
     onClick?: Function;
 }
+interface ListenersType {
+    mousedown: any;
+    mousemove: any;
+    mouseup: any;
+    click: any;
+}
 declare class Drag {
     el: HTMLElement;
     options: Required<OptionsType>;
@@ -13,6 +19,7 @@ declare class Drag {
     private startTime;
     private isMoving;
     private isClick;
+    private cacheListeners;
     constructor(el: HTMLElement, options: OptionsType);
     private init;
     private setStyle;
@@ -27,4 +34,4 @@ declare class Drag {
     destroy(): void;
 }
 
-export { Drag, OptionsType };
+export { Drag, ListenersType, OptionsType };

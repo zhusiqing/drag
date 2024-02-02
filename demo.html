@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .btn {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      background: red;
+    }
+  </style>
+</head>
+<body>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div id="btn" class="btn">2222222</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <div>sdfasdf</div>
+  <script src="./dist/index.js"></script>
+  <script type="module" crossorigin="anonymous">
+    const Drag = window.drag.Drag
+    new Drag(btn, {
+      onClick: (e) => {
+        console.log(e)
+        console.log('click')
+      }
+    })
+  </script>
+</body>
+</html>

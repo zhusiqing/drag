@@ -6,17 +6,17 @@
 
 ```bash
 # npm
-npm i @siqing/drag
+npm i drag-utils-simple
 # yarn
-yarn add @siqing/drag
+yarn add drag-utils-simple
 # pnpm
-pnpm add @siqing/drag
+pnpm add drag-utils-simple
 ```
 
 ## 用法
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 Drag(div);
@@ -29,7 +29,7 @@ Drag(div);
 设置元素的初始位置，默认为元素当前位置
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 Drag(div, {
@@ -43,7 +43,7 @@ Drag(div, {
 设置元素的层级（fixed），默认为99
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 Drag(div, {
@@ -58,7 +58,7 @@ Drag(div, {
 设置元素的点击事件
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 Drag(div, {
@@ -80,7 +80,7 @@ Drag(div, {
 **示例**
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 const drag = Drag(div, {
@@ -103,7 +103,7 @@ setTimeout(() => {
 **示例**
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 const drag = Drag(div, {
@@ -128,7 +128,7 @@ setTimeout(() => {
 **示例**
 
 ```javascript
-import Drag from '@siqing/drag';
+import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
 const drag = Drag(div, {
