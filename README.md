@@ -19,7 +19,7 @@ pnpm add drag-utils-simple
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-Drag(div);
+new Drag(div);
 ```
 
 ## 配置参数
@@ -32,7 +32,7 @@ Drag(div);
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-Drag(div, {
+new Drag(div, {
   top: '100px',
   left: '100px'
 });
@@ -46,7 +46,7 @@ Drag(div, {
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-Drag(div, {
+new Drag(div, {
   top: '100px',
   left: '100px',
   zIndex: 9999
@@ -61,7 +61,7 @@ Drag(div, {
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-Drag(div, {
+new Drag(div, {
   top: '100px',
   left: '100px',
   zIndex: 9999,
@@ -83,7 +83,7 @@ Drag(div, {
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-const drag = Drag(div, {
+const drag = new Drag(div, {
   top: '100px',
   left: '100px',
   zIndex: 9999,
@@ -106,7 +106,7 @@ setTimeout(() => {
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-const drag = Drag(div, {
+const drag = new Drag(div, {
   top: '100px',
   left: '100px',
   zIndex: 9999,
@@ -131,7 +131,7 @@ setTimeout(() => {
 import Drag from 'drag-utils-simple';
 const div = document.createElement('div');
 div.innerHTML = 'move element';
-const drag = Drag(div, {
+const drag = new Drag(div, {
   top: '100px',
   left: '100px',
   zIndex: 9999,
