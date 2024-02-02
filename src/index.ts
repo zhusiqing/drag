@@ -145,4 +145,6 @@ export class Drag {
   destroy() {
     this.clearListeners();
   }
-}
+};
+
+export default Drag;

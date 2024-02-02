@@ -1,6 +1,6 @@
 {
   "name": "drag-utils-simple",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "让元素支持拖拽移动",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

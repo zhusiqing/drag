@@ -34,4 +34,4 @@ declare class Drag {
     destroy(): void;
 }
 
-export { Drag, ListenersType, OptionsType };
+export { Drag, ListenersType, OptionsType, Drag as default };

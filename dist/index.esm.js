@@ -152,4 +152,4 @@ var Drag = /** @class */ (function () {
     return Drag;
 }());
 
-export { Drag };
+export { Drag, Drag as default };
