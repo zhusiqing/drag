@@ -1,0 +1,46 @@
+{
+  "name": "@siqing/drag",
+  "version": "1.0.0",
+  "description": "让元素支持拖拽移动",
+  "main": "dist/interface-bridge.js",
+  "module": "dist/interface-bridge.esm.js",
+  "types": "dist/interface-bridge.d.ts",
+  "files": [
+    "dist/*.js",
+    "dist/index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prettier": "prettier --write \"src/**/*.ts\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhusiqing/drag.git"
+  },
+  "keywords": [
+    "drag",
+    "move",
+    "element",
+    "dom"
+  ],
+  "author": "zhusiqing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhusiqing/drag/issues"
+  },
+  "homepage": "https://github.com/zhusiqing/drag#readme",
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.17.12",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "prettier": "^2.7.1",
+    "rollup": "^2.75.6",
+    "rollup-plugin-dts": "^4.2.2",
+    "tslib": "^2.4.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.3"
+  }
+}
