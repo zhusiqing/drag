@@ -10,17 +10,24 @@ interface ListenersType {
     mouseup: any;
     click: any;
 }
-declare class Drag {
-    el: HTMLElement;
-    options: Required<OptionsType>;
-    private defaultOptions;
+declare enum envEnum {
+    mobile = "mobile",
+    pc = "pc"
+}
+declare class Drag<T extends HTMLElement> {
+    readonly el: T;
+    readonly options: Required<OptionsType>;
+    readonly env: envEnum;
+    private cacheOptions;
+    private opt;
     private mousePos;
     private elPos;
     private startTime;
     private isMoving;
     private isClick;
+    private isMobile;
     private cacheListeners;
-    constructor(el: HTMLElement, options: OptionsType);
+    constructor(el: T, options?: OptionsType);
     private init;
     private setStyle;
     private addListeners;
@@ -28,6 +35,9 @@ declare class Drag {
     private handleMousemove;
     private handelMouseup;
     private handleClick;
+    private handleTouchstart;
+    private handleTouchmove;
+    private handleTouchend;
     private clearListeners;
     reset(): void;
     register(): void;

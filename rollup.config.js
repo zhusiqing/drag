@@ -19,7 +19,8 @@ export default defineConfig([
       {
         format: 'umd',
         file: `dist/index.js`,
-        name: 'Drag'
+        name: 'Drag',
+        exports: "named",
       },
       {
         exports: "named",

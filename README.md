@@ -71,6 +71,29 @@ new Drag(div, {
 });
 ```
 
+## 只读属性
+
+#### el
+
+当前绑定元素
+
+#### options : OptionsType
+
+当前配置
+
+```ts
+interface OptionsType {
+  top?: string;
+  left?: string;
+  zIndex?: number;
+  onClick?: Function;
+}
+```
+
+#### env : 'mobile' | 'pc'
+
+当前环境
+
 ## 方法
 
 #### reset

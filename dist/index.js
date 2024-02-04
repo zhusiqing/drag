@@ -30,8 +30,19 @@
         return __assign.apply(this, arguments);
     };
 
+    var isMobile = function () {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
+    var envEnum;
+    (function (envEnum) {
+        envEnum["mobile"] = "mobile";
+        envEnum["pc"] = "pc";
+    })(envEnum || (envEnum = {}));
     var Drag = /** @class */ (function () {
         function Drag(el, options) {
+            if (options === void 0) { options = {}; }
+            this.env = envEnum.pc;
             this.mousePos = {
                 x: 0,
                 y: 0
@@ -43,47 +54,64 @@
             this.startTime = Date.now();
             this.isMoving = false;
             this.isClick = false;
+            this.isMobile = false;
             this.cacheListeners = {
                 mousedown: function () { },
                 mousemove: function () { },
                 mouseup: function () { },
                 click: function () { }
             };
+            if (!el) {
+                throw new Error("el is null");
+            }
             this.el = el;
             this.options = __assign({ top: el.offsetTop + 'px', left: el.offsetLeft + 'px', zIndex: 99, onClick: function () { } }, options);
-            this.defaultOptions = __assign({}, this.options);
+            if (isMobile()) {
+                this.env = envEnum.mobile;
+                this.isMobile = true;
+            }
+            else {
+                this.env = envEnum.pc;
+                this.isMobile = false;
+            }
+            this.opt = __assign({}, this.options);
+            this.cacheOptions = __assign({}, this.options);
             this.init();
         }
         Drag.prototype.init = function () {
-            if (!this.el) {
-                return new Error("el is null");
-            }
             this.setStyle();
             this.addListeners();
         };
         Drag.prototype.setStyle = function () {
-            if (+this.options.top < 0) {
-                this.options.top = '0px';
+            if (+this.opt.top < 0) {
+                this.opt.top = '0px';
             }
-            if (+this.options.left < 0) {
-                this.options.left = '0px';
+            if (+this.opt.left < 0) {
+                this.opt.left = '0px';
             }
             var oldStyle = this.el.getAttribute('style');
             var constantStyle = 'position:fixed;cursor:pointer;user-select:none;';
-            var computedStyle = "top:".concat(this.options.top, ";left:").concat(this.options.left, ";z-index:").concat(this.options.zIndex, ";");
+            var computedStyle = "top:".concat(this.opt.top, ";left:").concat(this.opt.left, ";z-index:").concat(this.opt.zIndex, ";");
             this.el.setAttribute('style', "".concat(oldStyle).concat(constantStyle).concat(computedStyle));
         };
         Drag.prototype.addListeners = function () {
             this.cacheListeners = {
-                mousedown: this.handleMousedown.bind(this),
-                mousemove: this.handleMousemove.bind(this),
-                mouseup: this.handelMouseup.bind(this),
-                click: this.handleClick.bind(this)
+                mousedown: this.isMobile ? this.handleTouchstart.bind(this) : this.handleMousedown.bind(this),
+                mousemove: this.isMobile ? this.handleTouchmove.bind(this) : this.handleMousemove.bind(this),
+                mouseup: this.isMobile ? this.handleTouchend.bind(this) : this.handelMouseup.bind(this),
+                click: this.isMobile ? function () { } : this.handleClick.bind(this)
             };
-            this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
-            document.addEventListener('mousemove', this.cacheListeners.mousemove);
-            this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
-            this.el.addEventListener('click', this.cacheListeners.click);
+            if (this.isMobile) {
+                this.el.addEventListener('touchstart', this.cacheListeners.mousedown);
+                document.addEventListener('touchmove', this.cacheListeners.mousemove);
+                this.el.addEventListener('touchend', this.cacheListeners.mouseup);
+            }
+            else {
+                this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
+                document.addEventListener('mousemove', this.cacheListeners.mousemove);
+                this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
+                this.el.addEventListener('click', this.cacheListeners.click);
+            }
         };
         Drag.prototype.handleMousedown = function (e) {
             e.preventDefault();
@@ -103,22 +131,22 @@
             var moveX = e.clientX - (this.mousePos.x - this.elPos.x);
             var moveY = e.clientY - (this.mousePos.y - this.elPos.y);
             if (moveX < 0) {
-                this.options.left = '0px';
+                this.opt.left = '0px';
             }
             else if (moveX > window.innerWidth - this.el.offsetWidth) {
-                this.options.left = window.innerWidth - this.el.offsetWidth + 'px';
+                this.opt.left = window.innerWidth - this.el.offsetWidth + 'px';
             }
             else {
-                this.options.left = moveX + 'px';
+                this.opt.left = moveX + 'px';
             }
             if (moveY < 0) {
-                this.options.top = '0px';
+                this.opt.top = '0px';
             }
             else if (moveY > window.innerHeight - this.el.offsetHeight) {
-                this.options.top = window.innerHeight - this.el.offsetHeight + 'px';
+                this.opt.top = window.innerHeight - this.el.offsetHeight + 'px';
             }
             else {
-                this.options.top = moveY + 'px';
+                this.opt.top = moveY + 'px';
             }
             this.setStyle();
         };
@@ -129,13 +157,63 @@
         Drag.prototype.handleClick = function (e) {
             if (!this.isClick)
                 return;
-            this.options.onClick.call(this.el, e);
+            this.opt.onClick.call(this.el, e);
+        };
+        Drag.prototype.handleTouchstart = function (e) {
+            var targetTouch = e.targetTouches[0];
+            this.mousePos.x = targetTouch.clientX;
+            this.mousePos.y = targetTouch.clientY;
+            this.elPos.x = this.el.offsetLeft;
+            this.elPos.y = this.el.offsetTop;
+            this.isMoving = true;
+            this.startTime = Date.now();
+        };
+        Drag.prototype.handleTouchmove = function (e) {
+            if (!this.isMoving)
+                return;
+            var targetTouch = e.targetTouches[0];
+            var moveX = targetTouch.clientX - (this.mousePos.x - this.elPos.x);
+            var moveY = targetTouch.clientY - (this.mousePos.y - this.elPos.y);
+            if (moveX < 0) {
+                this.opt.left = '0px';
+            }
+            else if (moveX > window.innerWidth - this.el.offsetWidth) {
+                this.opt.left = window.innerWidth - this.el.offsetWidth + 'px';
+            }
+            else {
+                this.opt.left = moveX + 'px';
+            }
+            if (moveY < 0) {
+                this.opt.top = '0px';
+            }
+            else if (moveY > window.innerHeight - this.el.offsetHeight) {
+                this.opt.top = window.innerHeight - this.el.offsetHeight + 'px';
+            }
+            else {
+                this.opt.top = moveY + 'px';
+            }
+            this.setStyle();
+        };
+        Drag.prototype.handleTouchend = function (e) {
+            this.isMoving = false;
+            this.isClick = Date.now() - this.startTime < 200;
+            // 移动端下，当注册touch事件，click事件失效，这里判断是否click并触发
+            if (this.isClick) {
+                this.opt.onClick.call(this.el, e);
+            }
         };
         Drag.prototype.clearListeners = function () {
-            this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
-            document.removeEventListener('mousemove', this.cacheListeners.mousemove);
-            this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
-            this.el.removeEventListener('click', this.cacheListeners.click);
+            if (this.isMobile) {
+                this.el.removeEventListener('touchstart', this.cacheListeners.mousedown);
+                document.removeEventListener('touchmove', this.cacheListeners.mousemove);
+                this.el.removeEventListener('touchend', this.cacheListeners.mouseup);
+            }
+            else {
+                this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
+                document.removeEventListener('mousemove', this.cacheListeners.mousemove);
+                this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
+                this.el.removeEventListener('click', this.cacheListeners.click);
+            }
             this.cacheListeners = {
                 mousedown: function () { },
                 mousemove: function () { },
@@ -144,7 +222,7 @@
             };
         };
         Drag.prototype.reset = function () {
-            this.options = __assign({}, this.defaultOptions);
+            this.opt = __assign({}, this.cacheOptions);
             this.clearListeners();
             this.setStyle();
             this.addListeners();
