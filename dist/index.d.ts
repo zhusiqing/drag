@@ -30,6 +30,7 @@ declare class Drag<T extends HTMLElement> {
     constructor(el: T, options?: OptionsType);
     private init;
     private setStyle;
+    private computedStyle;
     private addListeners;
     private handleMousedown;
     private handleMousemove;

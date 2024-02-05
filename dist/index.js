@@ -62,7 +62,7 @@
                 click: function () { }
             };
             if (!el) {
-                throw new Error("el is null");
+                throw new Error('el is null');
             }
             this.el = el;
             this.options = __assign({ top: el.offsetTop + 'px', left: el.offsetLeft + 'px', zIndex: 99, onClick: function () { } }, options);
@@ -89,10 +89,23 @@
             if (+this.opt.left < 0) {
                 this.opt.left = '0px';
             }
-            var oldStyle = this.el.getAttribute('style');
-            var constantStyle = 'position:fixed;cursor:pointer;user-select:none;';
-            var computedStyle = "top:".concat(this.opt.top, ";left:").concat(this.opt.left, ";z-index:").concat(this.opt.zIndex, ";");
-            this.el.setAttribute('style', "".concat(oldStyle).concat(constantStyle).concat(computedStyle));
+            var oldStyle = this.el.getAttribute('style') || '';
+            this.computedStyle({
+                position: 'fixed',
+                'user-select': 'none',
+                top: this.opt.top,
+                left: this.opt.left,
+                'z-index': this.opt.zIndex
+            }, oldStyle);
+        };
+        Drag.prototype.computedStyle = function (obj, oldCssText) {
+            if (oldCssText === void 0) { oldCssText = ''; }
+            this.el.style.cssText =
+                oldCssText +
+                    Object.entries(obj).reduce(function (pre, cur) {
+                        pre += "".concat(cur[0], ":").concat(cur[1], ";");
+                        return pre;
+                    }, '');
         };
         Drag.prototype.addListeners = function () {
             this.cacheListeners = {
@@ -104,12 +117,12 @@
             if (this.isMobile) {
                 this.el.addEventListener('touchstart', this.cacheListeners.mousedown);
                 document.addEventListener('touchmove', this.cacheListeners.mousemove);
-                this.el.addEventListener('touchend', this.cacheListeners.mouseup);
+                document.addEventListener('touchend', this.cacheListeners.mouseup);
             }
             else {
                 this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
                 document.addEventListener('mousemove', this.cacheListeners.mousemove);
-                this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
+                document.addEventListener('mouseup', this.cacheListeners.mouseup);
                 this.el.addEventListener('click', this.cacheListeners.click);
             }
         };
@@ -206,12 +219,12 @@
             if (this.isMobile) {
                 this.el.removeEventListener('touchstart', this.cacheListeners.mousedown);
                 document.removeEventListener('touchmove', this.cacheListeners.mousemove);
-                this.el.removeEventListener('touchend', this.cacheListeners.mouseup);
+                document.removeEventListener('touchend', this.cacheListeners.mouseup);
             }
             else {
                 this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
                 document.removeEventListener('mousemove', this.cacheListeners.mousemove);
-                this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
+                document.removeEventListener('mouseup', this.cacheListeners.mouseup);
                 this.el.removeEventListener('click', this.cacheListeners.click);
             }
             this.cacheListeners = {

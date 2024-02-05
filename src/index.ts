@@ -22,7 +22,7 @@ export class Drag<T extends HTMLElement> {
   readonly options: Required<OptionsType>;
   readonly env: envEnum = envEnum.pc;
   private cacheOptions: Required<OptionsType>;
-  private opt: Required<OptionsType>
+  private opt: Required<OptionsType>;
   private mousePos: {
     x: number;
     y: number;
@@ -50,7 +50,7 @@ export class Drag<T extends HTMLElement> {
 
   constructor(el: T, options: OptionsType = {}) {
     if (!el) {
-      throw new Error("el is null");
+      throw new Error('el is null');
     }
     this.el = el;
     this.options = {
@@ -82,10 +82,25 @@ export class Drag<T extends HTMLElement> {
     if (+this.opt.left < 0) {
       this.opt.left = '0px';
     }
-    const oldStyle = this.el.getAttribute('style');
-    const constantStyle = 'position:fixed;cursor:pointer;user-select:none;';
-    const computedStyle = `top:${this.opt.top};left:${this.opt.left};z-index:${this.opt.zIndex};`;
-    this.el.setAttribute('style', `${oldStyle}${constantStyle}${computedStyle}`);
+    const oldStyle = this.el.getAttribute('style') || '';
+    this.computedStyle(
+      {
+        position: 'fixed',
+        'user-select': 'none',
+        top: this.opt.top,
+        left: this.opt.left,
+        'z-index': this.opt.zIndex
+      },
+      oldStyle
+    );
+  }
+  private computedStyle(obj: { [key: string]: any }, oldCssText: string = '') {
+    this.el.style.cssText =
+      oldCssText +
+      Object.entries(obj).reduce((pre, cur) => {
+        pre += `${cur[0]}:${cur[1]};`;
+        return pre;
+      }, '');
   }
   private addListeners() {
     this.cacheListeners = {
@@ -93,22 +108,22 @@ export class Drag<T extends HTMLElement> {
       mousemove: this.isMobile ? this.handleTouchmove.bind(this) : this.handleMousemove.bind(this),
       mouseup: this.isMobile ? this.handleTouchend.bind(this) : this.handelMouseup.bind(this),
       click: this.isMobile ? () => {} : this.handleClick.bind(this)
-    }
+    };
     if (this.isMobile) {
       this.el.addEventListener('touchstart', this.cacheListeners.mousedown);
       document.addEventListener('touchmove', this.cacheListeners.mousemove);
-      this.el.addEventListener('touchend', this.cacheListeners.mouseup);
+      document.addEventListener('touchend', this.cacheListeners.mouseup);
     } else {
       this.el.addEventListener('mousedown', this.cacheListeners.mousedown);
       document.addEventListener('mousemove', this.cacheListeners.mousemove);
-      this.el.addEventListener('mouseup', this.cacheListeners.mouseup);
+      document.addEventListener('mouseup', this.cacheListeners.mouseup);
       this.el.addEventListener('click', this.cacheListeners.click);
     }
   }
-  private handleMousedown (e: MouseEvent) {
+  private handleMousedown(e: MouseEvent) {
     e.preventDefault();
     // 左键为1，右键为2
-    if (e.buttons !== 1 ) return;
+    if (e.buttons !== 1) return;
     this.mousePos.x = e.clientX;
     this.mousePos.y = e.clientY;
     this.elPos.x = this.el.offsetLeft;
@@ -145,7 +160,7 @@ export class Drag<T extends HTMLElement> {
     this.opt.onClick.call(this.el, e);
   }
   private handleTouchstart(e: TouchEvent) {
-    const targetTouch = e.targetTouches[0]
+    const targetTouch = e.targetTouches[0];
     this.mousePos.x = targetTouch.clientX;
     this.mousePos.y = targetTouch.clientY;
     this.elPos.x = this.el.offsetLeft;
@@ -155,7 +170,7 @@ export class Drag<T extends HTMLElement> {
   }
   private handleTouchmove(e: TouchEvent) {
     if (!this.isMoving) return;
-    const targetTouch = e.targetTouches[0]
+    const targetTouch = e.targetTouches[0];
     const moveX = targetTouch.clientX - (this.mousePos.x - this.elPos.x);
     const moveY = targetTouch.clientY - (this.mousePos.y - this.elPos.y);
     if (moveX < 0) {
@@ -186,11 +201,11 @@ export class Drag<T extends HTMLElement> {
     if (this.isMobile) {
       this.el.removeEventListener('touchstart', this.cacheListeners.mousedown);
       document.removeEventListener('touchmove', this.cacheListeners.mousemove);
-      this.el.removeEventListener('touchend', this.cacheListeners.mouseup);
+      document.removeEventListener('touchend', this.cacheListeners.mouseup);
     } else {
       this.el.removeEventListener('mousedown', this.cacheListeners.mousedown);
       document.removeEventListener('mousemove', this.cacheListeners.mousemove);
-      this.el.removeEventListener('mouseup', this.cacheListeners.mouseup);
+      document.removeEventListener('mouseup', this.cacheListeners.mouseup);
       this.el.removeEventListener('click', this.cacheListeners.click);
     }
     this.cacheListeners = {
@@ -198,10 +213,10 @@ export class Drag<T extends HTMLElement> {
       mousemove: () => {},
       mouseup: () => {},
       click: () => {}
-    }
+    };
   }
   reset() {
-    this.opt = { ...this.cacheOptions }
+    this.opt = { ...this.cacheOptions };
     this.clearListeners();
     this.setStyle();
     this.addListeners();
@@ -212,6 +227,6 @@ export class Drag<T extends HTMLElement> {
   destroy() {
     this.clearListeners();
   }
-};
+}
 
 export default Drag;
